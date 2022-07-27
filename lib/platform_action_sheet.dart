@@ -9,21 +9,21 @@ import 'package:flutter/widgets.dart';
 /// Display a platform dependent Action Sheet
 class PlatformActionSheet {
   /// Function to display the sheet
-  void displaySheet(
+  Future<void> displaySheet(
       {@required BuildContext context,
       Widget title,
       Widget message,
       @required List<ActionSheetAction> actions}) {
     if (Platform.isIOS) {
-      _showCupertinoActionSheet(context, title, message, actions);
+      return _showCupertinoActionSheet(context, title, message, actions);
     } else {
-      _settingModalBottomSheet(context, title, message, actions);
+      return _settingModalBottomSheet(context, title, message, actions);
     }
   }
 }
 
-void _showCupertinoActionSheet(
-    BuildContext context, title, message, List<ActionSheetAction> actions) {
+Future<void> _showCupertinoActionSheet(BuildContext context, title, message,
+    List<ActionSheetAction> actions) async {
   final noCancelOption = -1;
   // Cancel action is treated differently with CupertinoActionSheets
   var indexOfCancel = actions.lastIndexWhere((action) => action.isCancel);
@@ -45,7 +45,7 @@ void _showCupertinoActionSheet(
               .toList(),
           cancelButton:
               _cupertinoActionSheetActionFromAction(actions[indexOfCancel]));
-  showCupertinoModalPopup(context: context, builder: (_) => actionSheet);
+  await showCupertinoModalPopup(context: context, builder: (_) => actionSheet);
 }
 
 CupertinoActionSheetAction _cupertinoActionSheetActionFromAction(
@@ -72,10 +72,10 @@ ListTile _listTileFromAction(ActionSheetAction action) => action.hasArrow
         onTap: action.onPressed,
       );
 
-void _settingModalBottomSheet(
-    context, title, message, List<ActionSheetAction> actions) {
+Future<void> _settingModalBottomSheet(
+    context, title, message, List<ActionSheetAction> actions) async {
   if (actions.isNotEmpty) {
-    showModalBottomSheet(
+    await showModalBottomSheet(
         context: context,
         builder: (_) {
           final _lastItem = 1, _secondLastItem = 2;
